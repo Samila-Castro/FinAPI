@@ -81,8 +81,21 @@ app.post("/withdraw", verifyIfExistsAccountCPF ,(request, response) => {
     const { amount } = request.body;
     const { customer } = request;
 
+    const balance = getBalance(customer.statement);
 
+    if(balance < amount){
+        return response.status(400).json({ error: "Insufficient funds!"});
+    }
 
+    const statementOPeration = {
+        amount,
+        created_at: new Date(),
+        type: "debit"
+    }
+
+    customer.statement.push(statementOPeration);
+
+    return response.status(201).send();
 
 });
 
