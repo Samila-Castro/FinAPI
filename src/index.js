@@ -1,3 +1,4 @@
+const { request, response } = require("express");
 const express = require("express");
 const { v4: uuidv4 } = require("uuid")
 
@@ -99,7 +100,7 @@ app.post("/withdraw", verifyIfExistsAccountCPF ,(request, response) => {
 
 });
 
-app.get("/statement/:date", verifyIfExistsAccountCPF, (request, response) => {
+app.get("/statement/date", verifyIfExistsAccountCPF, (request, response) => {
     const { customer } = request;
     const { date } = request.query;
 
@@ -123,6 +124,16 @@ app.get("/account", verifyIfExistsAccountCPF,(request, response) =>{
     const { customer } = request;
 
     return response.json(customer);
+});
+
+app.delete("/account", verifyIfExistsAccountCPF,(request, response) => {
+    const { customer } = request;
+
+    const indexCustomer = customers.findIndex(costumerIndex => costumerIndex.cpf === customer.cpf);
+    customers.splice(indexCustomer, 1);
+
+
+    return response.status(200).json(customers);
 });
 
 
