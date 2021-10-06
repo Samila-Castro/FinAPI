@@ -21,6 +21,17 @@ function verifyIfExistsAccountCPF(request, response, next){
     return next();
 }
 
+function getBalance(statement){
+   const balance = statement.reduce((acc, operation) => {
+        if(operation.type === 'credit'){
+            return acc + operation.amount;
+        }else{
+            return acc - operation.amount;
+        }
+    }, 0);
+    return balance;
+}
+
 app.post("/account", (request, response) => {
     const { name, cpf } = request.body;
 
@@ -60,6 +71,15 @@ app.post("/deposit", verifyIfExistsAccountCPF,(request, response )=> {
     customer.statement.push(statementOPeration);
 
     return response.status(201).send();
+
+
+
+
+});
+
+app.post("/withdraw", verifyIfExistsAccountCPF ,(request, response) => {
+    const { amount } = request.body;
+    const { customer } = request;
 
 
 
